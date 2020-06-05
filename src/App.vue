@@ -11,17 +11,28 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar'
+import './DragDropTouch';
+import { mapActions } from 'vuex';
+import Navbar from './components/Navbar';
+import { INGREDIENT_LIST } from './consts';
 
 export default {
   components: {
     Navbar,
   },
-  data () {
-    return {
-    };
-  },
   methods: {
+    ...mapActions({
+      ingredientList: INGREDIENT_LIST,
+    }),
+  },
+  mounted() {
+    this.ingredientList();
   },
 }
 </script>
+
+<style>
+  .q-header {
+    max-width: 100vw;
+  }
+</style>

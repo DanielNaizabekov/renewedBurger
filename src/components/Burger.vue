@@ -1,19 +1,7 @@
 <template>
   <q-scroll-area :thumb-style="thumbStyle" class="burger">
-    <transition-group name="burger-transition-wrapper" tag="ul">
+    <transition-group class="burger-list" name="burger-transition-wrapper" tag="ul">
       <li key="burger-top" class="burger-item burger-top"></li>
-      <!-- <draggable
-        class="burger-item"
-        key="burger-item"
-        v-bind="{ghostClass: 'burger-ghost-item', animation: 200, tag: 'li'}"
-      >
-        <div
-          v-for="item in separatedList"
-          :key="item.id"
-          class="burger-item-inner"
-          :class="item.name"
-        />
-      </draggable> -->
       <li
         class="burger-item"
         v-for="item in list"
@@ -22,8 +10,11 @@
         <div
           v-for="number in item.count"
           :key="number"
+          v-ripple
           class="burger-item-inner"
           :class="item.name"
+          :draggable="params.draggable"
+          @dragstart="dragstart(item.name)"
         />
       </li>
       
@@ -33,12 +24,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-// import draggable from "vuedraggable"
+import { mapGetters } from 'vuex';
+import { INGREDIENT_LIST } from '../consts';
 
 export default {
-  components: {
-    // draggable,
+  props: {
+    params: {
+      type: Object,
+      default() {
+        return {
+          draggable: true,
+        };
+      },
+    },
   },
   data () {
     return {
@@ -53,16 +51,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      list: 'ingredientList',
+      list: INGREDIENT_LIST,
     }),
-    separatedList() {
-      let newList = [];
-      this.list.forEach(item => {
-        for(let i = 0; i < item.count; i++) {
-          newList.push({name: item.name, id: item.name + 'Date.now()'});
-        }
-      });
-      return newList;
+  },
+  methods: {
+    dragstart(name) {
+      event.dataTransfer.setData('removingElementName', name);
     },
   },
 }
@@ -70,8 +64,12 @@ export default {
 
 <style scoped>
 .burger {
-  width: 280px;
+  width: 295px;
   height: 175px;
+}
+.burger-list {
+  width: 90%;
+  margin: 0 auto;
 }
 .burger-item {
   margin: 4px 0;
@@ -82,29 +80,18 @@ export default {
 .burger-item-inner {
   margin-bottom: 4px;
   cursor: grab;
-  transition: opacity .2s;
-  /* animation: slideDown .5s; */
+  transition: transform .2s;
 }
 .burger-item-inner:hover {
-  opacity: .7;
+  transform: scale(1.07);
 }
 .burger-item-inner:active {
   cursor: grabbing;
+  transform: scale(0.93);
 }
 .burger-item-inner:last-child {
   margin: 0;
 }
-@keyframes slideDown {
-  0% {
-    /* margin-top: -15px; */
-    opacity: 0;
-  }
-  100% {
-    /* margin-top: 0; */
-    opacity: 1;
-  }
-}
-
 .cutlet {
   height: 22px;
   border-radius: 20px;
@@ -149,7 +136,6 @@ export default {
 }
 .burger-transition-wrapper-enter, .burger-transition-wrapper-leave-to {
   opacity: 0;
-  /* margin-top: -15px; */
 }
 .burger-transition-wrapper-move {
   transition: .3s;

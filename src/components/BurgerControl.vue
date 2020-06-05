@@ -1,72 +1,93 @@
 <template>
-  <div class="burger-control">
-    <q-card class="my-card">
-      <q-card-section class="bg-brown-9 text-white">
-        <p class="text-h6 text-center">Total price: {{ totalPrice }}</p>
-      </q-card-section>
+  <q-card class="burger-control">
+    <q-card-section class="bg-brown-9 text-white">
+      <p class="text-h6 text-center">Total price: {{ totalPrice }}</p>
+    </q-card-section>
 
-      <q-card-actions>
-        <ul class="burger-control-list">
-          <li
-            v-for="(item, index) in list"
-            :key="index"
-            class="burger-control-item row justify-between items-center"
-          >
-            <q-btn
-              @click="handleRemove(item.name)"
-              class="burger-control-item-btn"
-              :disable="item.count === 0"
-              round
-              flat
-              color="brown-8"
-            >
-              <q-icon class="burger-control-item-icon" name="remove" />
-            </q-btn>
-            <div class="burger-control-ingredient text-weight-bold text-uppercase text-brown-5">{{ item.name }}</div>
-            <q-btn
-              @click="handleAdd(item.name)"
-              class="burger-control-item-btn"
-              round
-              flat
-              color="brown-8"
-            >
-              <q-icon class="burger-control-item-icon" name="add" />
-            </q-btn>
-          </li>
-        </ul>
-      </q-card-actions>
-
-      <q-card-section>
-        <div
-          class="row justify-around items-center"
+    <q-card-actions>
+      <ul class="burger-control-list">
+        <li
+          v-for="(item, index) in list"
+          :key="index"
+          class="burger-control-item row justify-between items-center"
         >
-          <q-btn rounded color="brown-9 text-weight-bold" label="Reset" style="width: 100px"/>
-          <q-btn rounded color="green-6 text-weight-bold" label="Continue" style="width: 100px"/>
-        </div>
-      </q-card-section>
-    </q-card>
-  </div>
+          <q-btn
+            @click="handleRemove(item.name)"
+            class="burger-control-item-btn"
+            :disable="item.count === 0"
+            round
+            flat
+            color="brown-8"
+          >
+            <q-icon class="burger-control-item-icon" name="remove" />
+          </q-btn>
+          <div class="burger-control-ingredient text-weight-bold text-uppercase text-brown-5">{{ item.name }}</div>
+          <q-btn
+            @click="handleAdd(item.name)"
+            class="burger-control-item-btn"
+            round
+            flat
+            color="brown-8"
+          >
+            <q-icon class="burger-control-item-icon" name="add" />
+          </q-btn>
+        </li>
+      </ul>
+    </q-card-actions>
+
+    <q-card-section>
+      <div
+        class="row justify-around items-center"
+      >
+        <q-btn
+          @click="reset"
+          rounded
+          color="brown-9 text-weight-bold"
+          label="Reset"
+          style="width: 100px"
+        />
+        <q-btn
+          @click="openModal"
+          rounded
+          color="green-6 text-weight-bold"
+          label="Continue"
+          style="width: 100px"
+        />
+      </div>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
+import { INGREDIENT_LIST } from '../consts';
 
 export default {
+  data() {
+    return {
+    };
+  },
   computed: {
     ...mapGetters({
-      list: 'ingredientList',
+      list: INGREDIENT_LIST,
     }),
     totalPrice() {
       return this.list.reduce((acc, currentValue) => acc + currentValue.price * currentValue.count, 0);
     },
   },
   methods: {
-    ...mapMutations(['ingredientRemove', 'ingredientAdd']),
-    handleRemove(type) {
-      this.ingredientRemove(type);
+    ...mapMutations(['ingredientRemove', 'ingredientAdd', 'ingredientReset']),
+    handleRemove(name) {
+      this.ingredientRemove(name);
     },
-    handleAdd(type) {
-      this.ingredientAdd(type);
+    handleAdd(name) {
+      this.ingredientAdd(name);
+    },
+    reset() {
+      this.ingredientReset();
+    },
+    openModal() {
+      this.$emit('openModal');
     },
   },
 }

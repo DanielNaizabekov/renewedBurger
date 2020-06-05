@@ -3,7 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './quasar'
-import 'normalize.css/normalize.css';
+import 'normalize.css/normalize.css'
+import VueAgile from 'vue-agile'
+
+Vue.use(VueAgile)
 
 Vue.config.productionTip = false
 

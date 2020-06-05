@@ -18,7 +18,7 @@ export default new Router({
          component: () => import('../views/Contacts'),
       },
       {
-         path: '*',
+         path: '/test',
          name: routeNames.error,
          component: () => import('../views/Error'),
       },
