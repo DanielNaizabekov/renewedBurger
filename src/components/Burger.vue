@@ -70,6 +70,7 @@ export default {
 .burger-list {
   width: 90%;
   margin: 0 auto;
+  padding: 0;
 }
 .burger-item {
   margin: 4px 0;
